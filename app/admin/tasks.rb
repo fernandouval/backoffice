@@ -14,5 +14,21 @@ ActiveAdmin.register Task do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-
+  form do |f|
+    f.inputs do
+      f.input :title
+      f.input :description, as: :ckeditor
+      f.input :end_date
+      #f.input :images, as: :file, input_html: { multiple: true }
+      f.input :fixed_price
+      f.input :worked_hours
+      f.input :deadline_id
+      f.input :status
+      f.input :priority
+      f.inputs "Website" do
+        f.input :website_id, :as => :select, :collection => Website.all.map{|s| [s.title, s.id]}
+      end
+    end
+    f.actions
+  end
 end
