@@ -5,7 +5,7 @@ ActiveAdmin.register Task do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :client_id, :title, :description, :end_date, :fixed_price, :worked_hours, :deadline_id
+  permit_params :website_id, :title, :description, :end_date, :fixed_price, :worked_hours, :deadline_id, :status, :priority
   #
   # or
   #

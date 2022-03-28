@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_03_27_143946) do
+ActiveRecord::Schema[7.0].define(version: 2022_03_28_042050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,50 +40,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_27_143946) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
-  create_table "analysts", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at", precision: nil
-    t.datetime "remember_created_at", precision: nil
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at", precision: nil
-    t.datetime "last_sign_in_at", precision: nil
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
-    t.string "confirmation_token"
-    t.datetime "confirmed_at", precision: nil
-    t.datetime "confirmation_sent_at", precision: nil
-    t.index ["confirmation_token"], name: "index_analysts_on_confirmation_token", unique: true
-    t.index ["email"], name: "index_analysts_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_analysts_on_reset_password_token", unique: true
-  end
-
-  create_table "backofficers", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at", precision: nil
-    t.datetime "remember_created_at", precision: nil
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at", precision: nil
-    t.datetime "last_sign_in_at", precision: nil
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
-    t.string "confirmation_token"
-    t.datetime "confirmed_at", precision: nil
-    t.datetime "confirmation_sent_at", precision: nil
-    t.index ["confirmation_token"], name: "index_backofficers_on_confirmation_token", unique: true
-    t.index ["email"], name: "index_backofficers_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_backofficers_on_reset_password_token", unique: true
-  end
-
   create_table "clients", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -102,42 +58,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_27_143946) do
     t.index ["client_id"], name: "index_deadlines_on_client_id"
   end
 
-  create_table "incidents", force: :cascade do |t|
-    t.bigint "analyst_id"
-    t.bigint "backofficer_id"
-    t.string "problem_kind", default: "bug_system"
-    t.string "priority_level", default: "low"
-    t.string "problem_description"
-    t.string "pending_description"
-    t.string "solution_description"
-    t.string "reopened_description"
-    t.string "user_email"
-    t.string "contract_id"
-    t.string "title"
-    t.string "status", default: "open"
-    t.string "analysis_time"
-    t.datetime "analysis_started_at", precision: nil
-    t.datetime "solved_at", precision: nil
-    t.string "entity"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "evidence_screen_file_name"
-    t.string "evidence_screen_content_type"
-    t.bigint "evidence_screen_file_size"
-    t.datetime "evidence_screen_updated_at", precision: nil
-    t.string "plataform_kind"
-    t.string "captured_by"
-    t.string "pending_reason"
-    t.string "reopening_description"
-    t.boolean "incident_reopened", default: false
-    t.string "reopened_by"
-    t.string "user_name"
-    t.index ["analyst_id"], name: "index_incidents_on_analyst_id"
-    t.index ["backofficer_id"], name: "index_incidents_on_backofficer_id"
-  end
-
   create_table "tasks", force: :cascade do |t|
-    t.bigint "client_id", null: false
     t.string "title"
     t.text "description"
     t.date "end_date"
@@ -146,8 +67,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_27_143946) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "deadline_id"
-    t.index ["client_id"], name: "index_tasks_on_client_id"
+    t.integer "status"
+    t.integer "priority"
+    t.bigint "website_id", null: false
     t.index ["deadline_id"], name: "index_tasks_on_deadline_id"
+    t.index ["website_id"], name: "index_tasks_on_website_id"
   end
 
   create_table "websites", force: :cascade do |t|
@@ -163,7 +87,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_27_143946) do
   end
 
   add_foreign_key "deadlines", "clients"
-  add_foreign_key "tasks", "clients"
   add_foreign_key "tasks", "deadlines"
+  add_foreign_key "tasks", "websites"
   add_foreign_key "websites", "clients"
 end
