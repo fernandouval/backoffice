@@ -14,10 +14,24 @@ ActiveAdmin.register Task do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
+
+  index do
+    selectable_column
+    column :website_id do |s|
+      s.website.title
+    end
+    column :title
+    column :description
+    column :status
+    column :priority
+
+    actions
+  end
+
   filter :website_id, as: :select, collection: Website.all.map{|s| [s.title, s.id]}
   filter :title
-  filter :priority
-  filter :status
+  filter :priority, as: :select, collection: Task.priorities.keys
+  filter :status, as: :select, collection: Task.statuses.keys
 
   form do |f|
     f.inputs do
