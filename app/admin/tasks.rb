@@ -16,18 +16,18 @@ ActiveAdmin.register Task do
   # end
   form do |f|
     f.inputs do
-      f.input :title
-      f.input :description, as: :ckeditor
+      f.inputs "Website" do
+        f.input :website_id, :as => :select, :collection => Website.all.map{|s| [s.title, s.id]}, required: true
+      end
+      f.input :title, required: true
+      f.input :description, as: :ckeditor, required: true
       f.input :end_date
       #f.input :images, as: :file, input_html: { multiple: true }
       f.input :fixed_price
       f.input :worked_hours
       f.input :deadline_id
-      f.input :status
-      f.input :priority
-      f.inputs "Website" do
-        f.input :website_id, :as => :select, :collection => Website.all.map{|s| [s.title, s.id]}
-      end
+      f.input :status, required: true
+      f.input :priority, required: true
     end
     f.actions
   end

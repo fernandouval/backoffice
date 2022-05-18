@@ -1,5 +1,4 @@
 class Task < ApplicationRecord
-  belongs_to :client
 
   enum status: [
     'open',
