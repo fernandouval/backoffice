@@ -5,7 +5,7 @@ ActiveAdmin.register Task do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :website_id, :title, :description, :end_date, :fixed_price, :worked_hours, :deadline_id, :status, :priority
+  permit_params :website_id, :title, :description, :end_date, :fixed_price, :worked_hours, :deadline_id, :status, :priority, :admin_user_id
   #
   # or
   #
@@ -14,6 +14,16 @@ ActiveAdmin.register Task do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
+  scope :all
+  scope :open, default: true do |tasks|
+    tasks.where( status: ['open', 'assigned'] )
+  end
+  scope :answered do |tasks|
+    tasks.where( status: ['answered', 'data_needed', 'scheduled'] )
+  end
+  scope :closed do |tasks|
+    tasks.where(:status => ['closed'] )
+  end
 
   index do
     selectable_column
@@ -24,6 +34,7 @@ ActiveAdmin.register Task do
     column :description
     column :status
     column :priority
+    column :worked_hours
 
     actions
   end
@@ -47,7 +58,20 @@ ActiveAdmin.register Task do
       f.input :deadline_id
       f.input :status, required: true
       f.input :priority, required: true
+      f.input :admin_user_id, as: :select, collection: AdminUser.all.map{|s| [s.email, s.id]}
     end
     f.actions
+  end
+
+  controller do
+    def update
+      pre_task = resource.dup
+      super do |tsk|
+        if !pre_task.admin_user_id && resource.admin_user_id
+          resource.status = 'assigned'
+          resource.save
+        end
+      end
+    end
   end
 end
