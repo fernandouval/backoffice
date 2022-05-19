@@ -1,4 +1,6 @@
 class Task < ApplicationRecord
+  has_paper_trail
+  
   belongs_to :website
   has_one :admin_user
 
