@@ -33,7 +33,9 @@ ActiveAdmin.register Task do
     column :title
     column :description
     column :status
-    column :priority
+    column :priority do |s|
+      div s.priority, class: s.priority
+    end
     column :worked_hours
 
     actions
