@@ -16,13 +16,13 @@ ActiveAdmin.register Task do
   # end
   scope :all
   scope :open, default: true do |tasks|
-    tasks.where( status: ['open', 'assigned'] )
+    tasks.where( status: ['open', 'assigned'] ).order(:priority)
   end
   scope :answered do |tasks|
-    tasks.where( status: ['answered', 'data_needed', 'scheduled'] )
+    tasks.where( status: ['answered', 'data_needed', 'scheduled'] ).order(:updated_at)
   end
   scope :closed do |tasks|
-    tasks.where(:status => ['closed'] )
+    tasks.where(:status => ['closed'] ).order(:updated_at)
   end
 
   index do
@@ -31,13 +31,15 @@ ActiveAdmin.register Task do
       s.website.title
     end
     column :title
-    column :description
+    column :description do | s |
+      s.description.html_safe
+    end
     column :status
     column :priority do |s|
       div s.priority, class: s.priority
     end
     column :worked_hours
-
+    column :created_at
     actions
   end
 
