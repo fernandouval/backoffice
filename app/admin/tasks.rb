@@ -55,13 +55,14 @@ ActiveAdmin.register Task do
       end
       f.input :title, required: true
       f.input :description, as: :ckeditor, required: true
-      f.input :end_date
       #f.input :images, as: :file, input_html: { multiple: true }
+      f.input :priority, required: true
+      f.input :estimated_hours
       f.input :fixed_price
       f.input :worked_hours
       f.input :deadline_id
+      f.input :end_date
       f.input :status, required: true
-      f.input :priority, required: true
       f.input :admin_user_id, as: :select, collection: AdminUser.all.map{|s| [s.email, s.id]}
     end
     f.actions

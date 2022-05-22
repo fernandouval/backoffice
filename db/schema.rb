@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_19_035356) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_22_015934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -38,6 +38,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_19_035356) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "answers", force: :cascade do |t|
+    t.bigint "task_id", null: false
+    t.text "comment"
+    t.boolean "send_email"
+    t.boolean "visible"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["task_id"], name: "index_answers_on_task_id"
   end
 
   create_table "clients", force: :cascade do |t|
@@ -71,6 +81,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_19_035356) do
     t.integer "priority"
     t.bigint "website_id", null: false
     t.bigint "admin_user_id"
+    t.decimal "estimated_hours", precision: 4, scale: 2
     t.index ["admin_user_id"], name: "index_tasks_on_admin_user_id"
     t.index ["deadline_id"], name: "index_tasks_on_deadline_id"
     t.index ["website_id"], name: "index_tasks_on_website_id"
@@ -98,6 +109,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_19_035356) do
     t.index ["client_id"], name: "index_websites_on_client_id"
   end
 
+  add_foreign_key "answers", "tasks"
   add_foreign_key "deadlines", "clients"
   add_foreign_key "tasks", "admin_users"
   add_foreign_key "tasks", "deadlines"

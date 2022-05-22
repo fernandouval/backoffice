@@ -1,0 +1,10 @@
+<h1>Hola, admin!</h1>
+<div>Se generó una nueva tarea para la web <%= @task.website.title %> con prioridad <%= @task.priority %>
+  <br>
+  <h2><%= @task.title %></h2>
+  <p>
+    <%= @task.description %>
+  </p>
+  <%= link_to "IR A LA TAREA", admin_task_url(@task) %>.
+</div>
+<p>Si recibiste este correo por equivocación podes ignorarlo</p>

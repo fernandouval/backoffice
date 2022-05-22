@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  task: one
+  comment: MyText
+  send_email: false
+  visible: false
+
+two:
+  task: two
+  comment: MyText
+  send_email: false
+  visible: false
