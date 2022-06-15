@@ -54,6 +54,7 @@ gem 'activeadmin'
 gem 'ckeditor', git: 'https://github.com/galetahub/ckeditor.git'
 #gem 'active_admin_datetimepicker'
 gem 'paper_trail'
+gem 'activeadmin-searchable_select'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

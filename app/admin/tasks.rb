@@ -5,7 +5,7 @@ ActiveAdmin.register Task do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :website_id, :title, :description, :end_date, :fixed_price, :worked_hours, :deadline_id, :status, :priority, :admin_user_id
+  permit_params :website_id, :title, :description, :end_date, :fixed_price, :worked_hours, :deadline_id, :status, :priority, :admin_user_id, :estimated_hours
   #
   # or
   #
@@ -23,6 +23,37 @@ ActiveAdmin.register Task do
   end
   scope :closed do |tasks|
     tasks.where(:status => ['closed'] ).order(:updated_at)
+  end
+
+  show do
+    attributes_table do
+      row :website_id do |s|
+        s.website.title
+      end
+      row :title
+      row :description
+      row :status
+      row :priority do |s|
+        div s.priority, class: s.priority
+      end
+      row :worked_hours
+      row :updated_at
+      row :created_at
+    end
+    active_admin_comments
+    panel "Respuestas" do
+      table_for Answer.where(task_id: resource.id).order(:created_at) do
+        column :title  do |s|
+          auto_link(s)
+        end
+        column :comment do | s |
+          s.comment.html_safe
+        end
+        column :worked_time
+        column :visible
+        column :send_email
+      end
+    end
   end
 
   index do
@@ -53,28 +84,37 @@ ActiveAdmin.register Task do
       f.inputs "Website" do
         f.input :website_id, :as => :select, :collection => Website.all.map{|s| [s.title, s.id]}, required: true
       end
-      f.input :title, required: true
-      f.input :description, as: :ckeditor, required: true
+      f.input :title, input_html: {required: true}
+      f.input :description, as: :ckeditor, input_html: {required: true}
       #f.input :images, as: :file, input_html: { multiple: true }
-      f.input :priority, required: true
+      f.input :priority, input_html: {required: true}
       f.input :estimated_hours
       f.input :fixed_price
       f.input :worked_hours
       f.input :deadline_id
       f.input :end_date
-      f.input :status, required: true
+      f.input :status, input_html: {required: true}
       f.input :admin_user_id, as: :select, collection: AdminUser.all.map{|s| [s.email, s.id]}
     end
     f.actions
   end
 
   controller do
+    def new
+      if !resource.status
+        resource.status = 'open'
+        resource.save
+      end
+    end
     def update
       pre_task = resource.dup
       super do |tsk|
         if !pre_task.admin_user_id && resource.admin_user_id
           resource.status = 'assigned'
           resource.save
+        end
+        if pre_task.status != 'assigned' && resource.status == 'assigned'
+          resource.send_assignment
         end
       end
     end

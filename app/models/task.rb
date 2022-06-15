@@ -2,7 +2,9 @@ class Task < ApplicationRecord
   has_paper_trail
 
   belongs_to :website
-  has_one :admin_user
+  belongs_to :admin_user
+  has_many :answers
+  accepts_nested_attributes_for :answers, :allow_destroy => false
 
   enum status: [
     'open',
@@ -10,7 +12,8 @@ class Task < ApplicationRecord
     'closed',
     'answered',
     'data_needed',
-    'scheduled'
+    'scheduled',
+    'in_progress'
   ]
 
   enum priority: [
@@ -34,10 +37,13 @@ class Task < ApplicationRecord
   #
   after_update do
     if self.status == 'closed'
-      SupportMailer.with(task: task).task_closed.deliver
+      SupportMailer.with(task: self).task_closed.deliver
     end
     if self.status == 'answered'
-      SupportMailer.with(task: task).task_closed.deliver
+      SupportMailer.with(task: self).task_answered.deliver
     end
+  end
+  def send_assignment
+    SupportMailer.with(task: self, to: self.admin_user.email).task_assigned.deliver
   end
 end
