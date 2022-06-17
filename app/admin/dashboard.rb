@@ -5,7 +5,7 @@ ActiveAdmin.register_page "Dashboard" do
     div class: "blank_slate_container", id: "dashboard_default_message" do
       span class: "blank_slate" do
         hours = 0
-        Task.where(admin_user_id: current_admin_user.id, status: 'closed').map{ |task| hours += task.worked_hours}
+        #Task.where(admin_user_id: current_admin_user.id, status: 'closed').map{ |task| hours += task.worked_hours}
         span "Computando tareas"
         small "Las tareas se computan al cierre del mes corriente, cuando las mismas se pasan a closed."
         span "Horas trabajadas del mes: #{hours}"
@@ -25,7 +25,8 @@ ActiveAdmin.register_page "Dashboard" do
     columns do
       column do
         panel "Tareas" do
-          table_for Task.where(admin_user_id: current_admin_user.id, status: ['assigned', 'in_progress', 'scheduled']).order(:priority) do
+          table_for Task.where(admin_user_id: current_admin_user.id, status: ['assigned', 'in_progress', 'scheduled']).order(priority: :desc) do
+            column :website
             column :title  do |s|
               auto_link(s)
             end

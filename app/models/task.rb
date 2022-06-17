@@ -2,7 +2,7 @@ class Task < ApplicationRecord
   has_paper_trail
 
   belongs_to :website
-  belongs_to :admin_user
+  has_one :admin_user
   has_many :answers
   accepts_nested_attributes_for :answers, :allow_destroy => false
 
@@ -36,14 +36,22 @@ class Task < ApplicationRecord
   end
   #
   after_update do
+    logger.debug "\n\nAFTERUPDATE\n\n"
     if self.status == 'closed'
       SupportMailer.with(task: self).task_closed.deliver
     end
     if self.status == 'answered'
       SupportMailer.with(task: self).task_answered.deliver
     end
+    if self.saved_change_to_admin_user_id?
+      self.status = 'assigned'
+      self.save
+    end
+    if self.saved_change_to_status? && self.status == 'assigned'
+      self.send_assignment
+    end
   end
   def send_assignment
-    SupportMailer.with(task: self, to: self.admin_user.email).task_assigned.deliver
+    SupportMailer.with(task: self, to: AdminUser.find(self.admin_user_id).email).task_assigned.deliver
   end
 end

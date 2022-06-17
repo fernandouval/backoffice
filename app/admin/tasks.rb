@@ -5,7 +5,7 @@ ActiveAdmin.register Task do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :website_id, :title, :description, :end_date, :fixed_price, :worked_hours, :deadline_id, :status, :priority, :admin_user_id, :estimated_hours
+  permit_params :website_id, :title, :description, :end_date, :fixed_price, :worked_hours, :deadline_id, :status, :priority, :admin_user_id, :estimated_hours, :task_id
   #
   # or
   #
@@ -31,7 +31,9 @@ ActiveAdmin.register Task do
         s.website.title
       end
       row :title
-      row :description
+      row :description do | s |
+        s.description.html_safe
+      end
       row :status
       row :priority do |s|
         div s.priority, class: s.priority
@@ -42,6 +44,11 @@ ActiveAdmin.register Task do
     end
     active_admin_comments
     panel "Respuestas" do
+      div class: 'action_items' do
+        span class: 'action_item' do
+          "#{link_to "Agregar respuesta", "#{new_admin_answer_path()}?task=#{resource.id}", target: :_blank}".html_safe
+        end
+      end
       table_for Answer.where(task_id: resource.id).order(:created_at) do
         column :title  do |s|
           auto_link(s)
@@ -69,8 +76,17 @@ ActiveAdmin.register Task do
     column :priority do |s|
       div s.priority, class: s.priority
     end
+    column :completeness do |s|
+      div do
+        span "#{s.completeness} %"
+        span "", width: s.completeness, class: 'completeness'
+      end
+    end
     column :worked_hours
     column :created_at
+    column "Reply" do |s|
+      link_to "Reply", "#{new_admin_answer_path()}?task=#{s.id}", target: :_blank
+    end
     actions
   end
 
@@ -82,41 +98,22 @@ ActiveAdmin.register Task do
   form do |f|
     f.inputs do
       f.inputs "Website" do
-        f.input :website_id, :as => :select, :collection => Website.all.map{|s| [s.title, s.id]}, required: true
+        f.input :website_id, :as => :searchable_select, :collection => Website.all.map{|s| [s.title, s.id]}, required: true, input_html: {required: true}
       end
-      f.input :title, input_html: {required: true}
-      f.input :description, as: :ckeditor, input_html: {required: true}
+      f.input :title, input_html: {required: true}, required: true
+      f.input :description, as: :ckeditor, input_html: {required: true}, required: true
       #f.input :images, as: :file, input_html: { multiple: true }
-      f.input :priority, input_html: {required: true}
+      f.input :priority, input_html: {required: true}, required: true
+      f.input :status, input_html: {required: true}, required: true
+      f.input :admin_user_id, as: :searchable_select, collection: AdminUser.all.map{|s| [s.email, s.id]}
+      f.inputs "Parent Task" do
+        f.input :task_id, :as => :searchable_select, :collection => Task.all.map{|s| [s.title, s.id]}, required: true
+      end
       f.input :estimated_hours
       f.input :fixed_price
       f.input :worked_hours
-      f.input :deadline_id
-      f.input :end_date
-      f.input :status, input_html: {required: true}
-      f.input :admin_user_id, as: :select, collection: AdminUser.all.map{|s| [s.email, s.id]}
+      f.input :end_date, as: :date_picker
     end
     f.actions
-  end
-
-  controller do
-    def new
-      if !resource.status
-        resource.status = 'open'
-        resource.save
-      end
-    end
-    def update
-      pre_task = resource.dup
-      super do |tsk|
-        if !pre_task.admin_user_id && resource.admin_user_id
-          resource.status = 'assigned'
-          resource.save
-        end
-        if pre_task.status != 'assigned' && resource.status == 'assigned'
-          resource.send_assignment
-        end
-      end
-    end
   end
 end

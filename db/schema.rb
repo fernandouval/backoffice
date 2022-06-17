@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_12_021709) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_15_160938) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -88,8 +88,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_12_021709) do
     t.bigint "admin_user_id"
     t.decimal "estimated_hours", precision: 4, scale: 2
     t.date "closed_at"
+    t.integer "completeness"
+    t.bigint "task_id"
     t.index ["admin_user_id"], name: "index_tasks_on_admin_user_id"
     t.index ["deadline_id"], name: "index_tasks_on_deadline_id"
+    t.index ["task_id"], name: "index_tasks_on_task_id"
     t.index ["website_id"], name: "index_tasks_on_website_id"
   end
 
@@ -120,6 +123,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_12_021709) do
   add_foreign_key "deadlines", "clients"
   add_foreign_key "tasks", "admin_users"
   add_foreign_key "tasks", "deadlines"
+  add_foreign_key "tasks", "tasks"
   add_foreign_key "tasks", "websites"
   add_foreign_key "websites", "clients"
 end
