@@ -2,7 +2,9 @@ class Task < ApplicationRecord
   has_paper_trail
 
   belongs_to :website
-  has_one :admin_user
+  belongs_to :admin_user
+  belongs_to :depends_on, class_name: 'Task'
+
   has_many :answers
   accepts_nested_attributes_for :answers, :allow_destroy => false
 

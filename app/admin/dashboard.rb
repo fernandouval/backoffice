@@ -4,10 +4,8 @@ ActiveAdmin.register_page "Dashboard" do
   content title: proc { I18n.t("active_admin.dashboard") } do
     div class: "blank_slate_container", id: "dashboard_default_message" do
       span class: "blank_slate" do
-        hours = 0
-        #Task.where(admin_user_id: current_admin_user.id, status: 'closed').map{ |task| hours += task.worked_hours}
-        span "Computando tareas"
-        small "Las tareas se computan al cierre del mes corriente, cuando las mismas se pasan a closed."
+        start = Time.utc("2000-01-01 00:00:00").to_i
+        hours = Answer.from_this_month.where(admin_user_id: current_admin_user.id).map {|a| a.worked_time.to_i - start}.sum/3600.to_f
         span "Horas trabajadas del mes: #{hours}"
       end
       span class: "blank_slate" do
@@ -15,10 +13,17 @@ ActiveAdmin.register_page "Dashboard" do
         small "Si una tarea pasa más de 72 hs en answered la tarea se cierra automáticamente"
       end
     end
-    div class: "blank_slate_container", id: "dashboard_default_message" do
-      span class: "blank_slate" do
-        span "Buen día #{current_admin_user.email}"
-        small "Estas son las tareas que tienes asignadas:"
+    if current_admin_user.is_superadmin?
+      panel "Horas del mes" do
+        start = Time.utc("2000-01-01 00:00:00").to_i
+        table_for AdminUser.order(name: :asc) do
+          column :name do |a|
+            link_to a.name, auto_url_for(a)
+          end
+          column :worked_hours  do |a|
+            a.answers.from_this_month.map {|a| a.worked_time.to_i - start}.sum/3600.to_f
+          end
+        end
       end
     end
 

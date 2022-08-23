@@ -16,7 +16,7 @@ ActiveAdmin.register Task do
   # end
   scope :all
   scope :open, default: true do |tasks|
-    tasks.where( status: ['open', 'assigned'] ).order(:priority)
+    tasks.where( status: ['open', 'assigned', 'in_progress'] ).order(:priority)
   end
   scope :answered do |tasks|
     tasks.where( status: ['answered', 'data_needed', 'scheduled'] ).order(:updated_at)
@@ -42,7 +42,6 @@ ActiveAdmin.register Task do
       row :updated_at
       row :created_at
     end
-    active_admin_comments
     panel "Respuestas" do
       div class: 'action_items' do
         span class: 'action_item' do
@@ -61,12 +60,18 @@ ActiveAdmin.register Task do
         column :send_email
       end
     end
+    active_admin_comments
   end
 
   index do
     selectable_column
     column :website_id do |s|
-      s.website.title
+      ul do
+        li do
+          link_to s.website.client.name, auto_link(s.website.client)
+        end
+        li s.website.title
+      end
     end
     column :title
     column :description do | s |
@@ -76,14 +81,15 @@ ActiveAdmin.register Task do
     column :priority do |s|
       div s.priority, class: s.priority
     end
+    column :assigned do |s|
+      link_to s.admin_user.name, auto_link(s.admin_user) if !s.admin_user.nil?
+    end
     column :completeness do |s|
       div do
         span "#{s.completeness} %"
         span "", width: s.completeness, class: 'completeness'
       end
     end
-    column :worked_hours
-    column :created_at
     column "Reply" do |s|
       link_to "Reply", "#{new_admin_answer_path()}?task=#{s.id}", target: :_blank
     end

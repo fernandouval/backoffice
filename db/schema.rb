@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_15_160938) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_23_055605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -36,6 +36,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_15_160938) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "role"
+    t.string "name"
+    t.string "phone"
+    t.string "personal_email"
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
@@ -90,8 +94,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_15_160938) do
     t.date "closed_at"
     t.integer "completeness"
     t.bigint "task_id"
+    t.bigint "depends_on_id"
     t.index ["admin_user_id"], name: "index_tasks_on_admin_user_id"
     t.index ["deadline_id"], name: "index_tasks_on_deadline_id"
+    t.index ["depends_on_id"], name: "index_tasks_on_depends_on_id"
     t.index ["task_id"], name: "index_tasks_on_task_id"
     t.index ["website_id"], name: "index_tasks_on_website_id"
   end
@@ -124,6 +130,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_15_160938) do
   add_foreign_key "tasks", "admin_users"
   add_foreign_key "tasks", "deadlines"
   add_foreign_key "tasks", "tasks"
+  add_foreign_key "tasks", "tasks", column: "depends_on_id"
   add_foreign_key "tasks", "websites"
   add_foreign_key "websites", "clients"
 end

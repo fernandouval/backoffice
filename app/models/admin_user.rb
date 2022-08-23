@@ -9,4 +9,20 @@ class AdminUser < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :tasks
+  has_many :answers
+
+  enum role: [
+   'super_admin',
+   'admin',
+   'developer',
+   'designer',
+  ]
+
+  def is_admin?
+   ['admin', 'super_admin'].include?(self.role)
+  end
+
+  def is_superadmin?
+   ['super_admin'].include?(self.role)
+  end
 end
