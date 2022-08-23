@@ -67,6 +67,9 @@ ActiveAdmin.register AdminUser do
         column :status do |a|
           a.task.status
         end
+        column :hours do |a|
+          a.worked_time
+        end
         column :priority do |a|
           div a.task.priority, class: a.task.priority
         end

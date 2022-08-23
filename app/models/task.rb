@@ -3,7 +3,8 @@ class Task < ApplicationRecord
 
   belongs_to :website
   belongs_to :admin_user
-  belongs_to :depends_on, class_name: 'Task'
+  belongs_to :depends_on, class_name: 'Task', optional: true
+  has_many :dependant, :class_name => 'Task', :foreign_key => 'depends_on_id'
 
   has_many :answers
   accepts_nested_attributes_for :answers, :allow_destroy => false
@@ -26,6 +27,9 @@ class Task < ApplicationRecord
     'urgent',
     'critical'
   ]
+
+  scope :superadmin, ->() { where(role: 0) }
+
   def is_open
     !self.status.in?( ['closed', 'answered'] )
   end

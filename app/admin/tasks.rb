@@ -5,7 +5,7 @@ ActiveAdmin.register Task do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :website_id, :title, :description, :end_date, :fixed_price, :worked_hours, :deadline_id, :status, :priority, :admin_user_id, :estimated_hours, :task_id
+  permit_params :website_id, :title, :description, :end_date, :fixed_price, :worked_hours, :deadline_id, :status, :priority, :admin_user_id, :estimated_hours, :task_id, :depends_on_id
   #
   # or
   #
@@ -98,8 +98,9 @@ ActiveAdmin.register Task do
 
   filter :website_id, as: :select, collection: Website.all.map{|s| [s.title, s.id]}
   filter :title
-  filter :priority, as: :select, collection: Task.priorities.keys
-  filter :status, as: :select, collection: Task.statuses.keys
+  filter :priority, as: :select
+  filter :status, as: :select
+  filter :admin_user, as: :select
 
   form do |f|
     f.inputs do
@@ -113,11 +114,13 @@ ActiveAdmin.register Task do
       f.input :status, input_html: {required: true}, required: true
       f.input :admin_user_id, as: :searchable_select, collection: AdminUser.all.map{|s| [s.email, s.id]}
       f.inputs "Parent Task" do
-        f.input :task_id, :as => :searchable_select, :collection => Task.all.map{|s| [s.title, s.id]}, required: true
+        f.input :task_id, :as => :searchable_select, :collection => Task.all.map{|s| [s.title, s.id]}
+      end
+      f.inputs "Depends on" do
+        f.input :depends_on_id, :as => :searchable_select, :collection => Task.all.map{|s| [s.title, s.id]}
       end
       f.input :estimated_hours
       f.input :fixed_price
-      f.input :worked_hours
       f.input :end_date, as: :date_picker
     end
     f.actions
