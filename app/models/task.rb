@@ -28,8 +28,6 @@ class Task < ApplicationRecord
     'critical'
   ]
 
-  scope :superadmin, ->() { where(role: 0) }
-
   def is_open
     !self.status.in?( ['closed', 'answered'] )
   end
@@ -39,6 +37,10 @@ class Task < ApplicationRecord
   #
   after_create do
     SupportMailer.with(task: self).task_new.deliver
+    if self.admin_user_id.present? && (self.status.nil? || self.status == 'open')
+      self.status = 'assigned'
+      self.save
+    end
   end
   #
   after_update do
