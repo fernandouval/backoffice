@@ -68,7 +68,7 @@ ActiveAdmin.register Task do
     column :website_id do |s|
       ul do
         li do
-          link_to s.website.client.name, auto_link(s.website.client)
+          auto_link(s.website.client)
         end
         li s.website.title
       end

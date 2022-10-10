@@ -5,4 +5,5 @@ class Answer < ApplicationRecord
   accepts_nested_attributes_for :task, :allow_destroy => false
 
   scope :from_this_month, ->() { where("answers.created_at > ? AND answers.created_at < ?", Time.now.beginning_of_month, Time.now.end_of_month) }
+  scope :from_last_month, ->() { where("answers.created_at > ? AND answers.created_at < ?", Time.now.beginning_of_month - 1.month, Time.now.end_of_month - 1.month) }
 end

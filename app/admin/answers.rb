@@ -20,6 +20,28 @@ ActiveAdmin.register Answer do
     end
   end
 
+  index do
+    start = Time.utc("2000-01-01 00:00:00").to_i
+    tot = 0
+    selectable_column
+    column :task
+    column :title
+    column :comment do | s |
+      s.comment.present? ? s.comment.html_safe : ''
+    end
+    column :worked_time do |s|
+      if s.worked_time.present?
+        tot += s.worked_time.to_i - start
+        s.worked_time.strftime('%H:%M')
+      else
+        '0'
+      end
+    end
+    column :status
+    column :created_at
+    actions
+    span "Total de horas: #{ tot/3600 }"
+  end
 
   form do |f|
     f.inputs do
