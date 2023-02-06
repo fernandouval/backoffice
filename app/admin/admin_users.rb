@@ -84,5 +84,25 @@ ActiveAdmin.register AdminUser do
         end
       end
     end
+    panel "Tareas del mes anterior" do
+      table_for Answer.from_tlas_month.where(admin_user_id: @admin.id).order(created_at: :asc) do
+        column :title
+        column :website do |a|
+          a.task.website
+        end
+        column :task  do |a|
+          auto_link(a.task)
+        end
+        column :status do |a|
+          a.task.status
+        end
+        column :hours do |a|
+          a.worked_time
+        end
+        column :priority do |a|
+          div a.task.priority, class: a.task.priority
+        end
+      end
+    end
   end
 end
