@@ -43,12 +43,18 @@ ActiveAdmin.register Client do
     end
     panel "Tareas del mes" do
       table_for Answer.from_this_month.joins(task: [:website]).where("websites.client_id": @client.id).order(created_at: :asc) do
-        column :title
+        column :created_at
+        column :title do |a|
+          auto_link(a)
+        end
         column :website do |a|
           a.task.website
         end
         column :task  do |a|
           auto_link(a.task)
+        end
+        column :worked_time do |a|
+          a.worked_time.strftime('%H:%M')
         end
         column :status do |a|
           a.task.status
