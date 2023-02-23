@@ -85,7 +85,7 @@ ActiveAdmin.register AdminUser do
       end
     end
     panel "Tareas del mes anterior" do
-      table_for Answer.from_tlas_month.where(admin_user_id: @admin.id).order(created_at: :asc) do
+      table_for Answer.from_last_month.where(admin_user_id: @admin.id).order(created_at: :asc) do
         column :title
         column :website do |a|
           a.task.website

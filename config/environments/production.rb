@@ -3,7 +3,7 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-  config.hosts << "clientes.fuval.uy"
+  config.hosts << "clientes.fuvals.uy"
   # Code is not reloaded between requests.
   config.cache_classes = true
 
@@ -92,7 +92,7 @@ Rails.application.configure do
   # SMTP settings
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :address              => "mail.fuval.uy",
+    :address              => "mail.fuvals.uy",
     :port                 =>  587,
     :user_name            => Rails.application.credentials[:mail_username],
     :password             => Rails.application.credentials[:mail_password]
