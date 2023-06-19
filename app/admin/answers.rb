@@ -52,7 +52,7 @@ ActiveAdmin.register Answer do
       f.input :send_email
       if params[:task] || resource.task_id
         resource.task_id = resource.task_id ? resource.task_id : params[:task]
-        f.has_many :task do |t|
+        f.has_many :task, new_record: false do |t|
         #@task, :url => '#' do |t|
           #f.has_many :class_tasks, heading: false, allow_destroy: false do |t|
           t.input :status

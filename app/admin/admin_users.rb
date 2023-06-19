@@ -6,7 +6,7 @@ ActiveAdmin.register AdminUser do
 
   controller do
     def authenticate
-      if !current_admin_user.is_superadmin?
+      if !current_admin_user.is_superadmin? || current_admin_user.id != params[:id]
         render :file => "public/401.html", :status => :unauthorized
       end
     end

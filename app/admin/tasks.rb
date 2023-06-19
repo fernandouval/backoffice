@@ -70,7 +70,7 @@ ActiveAdmin.register Task do
         li do
           auto_link(s.website.client)
         end
-        li s.website.title
+        li auto_link(s.website)
       end
     end
     column :title
@@ -90,6 +90,11 @@ ActiveAdmin.register Task do
         span "", width: s.completeness, class: 'completeness'
       end
     end
+    column :computed_hours do |t|
+      t.computed_hours.round(2)
+    end
+    column :deadline
+    column :depend_on
     column "Reply" do |s|
       link_to "Reply", "#{new_admin_answer_path()}?task=#{s.id}", target: :_blank
     end

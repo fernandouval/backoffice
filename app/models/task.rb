@@ -59,7 +59,13 @@ class Task < ApplicationRecord
       self.send_assignment
     end
   end
+  #
   def send_assignment
     SupportMailer.with(task: self, to: AdminUser.find(self.admin_user_id).email).task_assigned.deliver
+  end
+  #
+  def computed_hours
+    start = Time.utc("2000-01-01 00:00:00").to_i
+    self.answers.map {|a| a.worked_time.to_i - start}.sum/3600.to_f.round(2)
   end
 end
