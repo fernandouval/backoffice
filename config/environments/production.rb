@@ -95,7 +95,7 @@ Rails.application.configure do
     :address              => "mail.fuvals.uy",
     :port                 =>  587,
     :user_name            => Rails.application.credentials[:mail_username],
-    :password             => Rails.application.credentials[:mail_password]
+    :password             => Rails.application.credentials[:mail_password],
     :authentication       => "plain",
     :enable_starttls_auto => true
   }

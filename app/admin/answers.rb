@@ -5,6 +5,7 @@ ActiveAdmin.register Answer do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
+  before_action :check_dependency, only: [:new]
   permit_params :task, :task_id, :title, :comment, :worked_time, :send_email, :visible, :admin_user_id, task_attributes:[:id, :status, :priority]
   #
   # or
@@ -44,6 +45,11 @@ ActiveAdmin.register Answer do
   end
 
   form do |f|
+    if @task.present?
+      div class: 'new-answer-header' do
+        span "Respuesta para la tarea #{@task.title} en #{@task.website.title}"
+      end
+    end
     f.inputs do
       f.input :title, input_html: {required: true}
       f.input :comment, as: :ckeditor, input_html: {required: true}
@@ -92,6 +98,17 @@ ActiveAdmin.register Answer do
         flash[:notice] = "Se ha creado la respuesta"
       end
       redirect_to admin_task_path(params[:answer][:task_id])
+    end
+    #
+    def check_dependency
+      if params[:task]
+        @task = Task.find(params[:task])
+        if @task.depends_on_id.present?
+          if @task.depends_on.is_open
+            redirect_to admin_task_url(@task.id), flash: { error: "La tarea está bloqueada por su dependencia con: #{@task.depends_on.title}" }
+          end
+        end
+      end
     end
   end
 end

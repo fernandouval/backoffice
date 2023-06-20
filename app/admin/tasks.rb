@@ -77,7 +77,6 @@ ActiveAdmin.register Task do
     column :description do | s |
       s.description.html_safe
     end
-    column :status
     column :priority do |s|
       div s.priority, class: s.priority
     end
@@ -94,9 +93,20 @@ ActiveAdmin.register Task do
       t.computed_hours.round(2)
     end
     column :deadline
-    column :depend_on
+    column :depends_on
+    column :status do |t|
+      if t.depends_on.present?
+        if t.depends_on.is_open
+          span "Blocked", class: 'disabled'
+        else
+          span t.status, class: t.status
+        end
+      else
+        span t.status, class: t.status
+      end
+    end
     column "Reply" do |s|
-      link_to "Reply", "#{new_admin_answer_path()}?task=#{s.id}", target: :_blank
+      link_to "Reply", "#{new_admin_answer_path()}?task=#{s.id}", target: :_blank, class: s.depends_on.present? && s.depends_on.is_open ? 'disabled' : s.status
     end
     actions
   end
