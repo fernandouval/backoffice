@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'soporte@fuval.uy', host: 'fuval.uy'
+  default from: 'soporte@fuvals.uy', host: 'fuvals.uy'
   layout 'mailer'
 end

@@ -77,6 +77,7 @@ ActiveAdmin.register Task do
     column :description do | s |
       s.description.html_safe
     end
+    column :created
     column :priority do |s|
       div s.priority, class: s.priority
     end

@@ -15,6 +15,19 @@ ActiveAdmin.register Website do
   #   permitted
   # end
 
+  index do |w|
+    selectable_column
+    column :title
+    column :description
+    column :url
+    column :client
+    column :is_hosted
+    column :is_managed
+    column :last_dev_migration
+    actions
+  end
+
+
   form do |f|
     f.inputs do
       f.inputs "Client" do

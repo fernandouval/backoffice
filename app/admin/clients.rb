@@ -7,7 +7,7 @@ ActiveAdmin.register Client do
   #
   permit_params :name, :email, :phone
 
-  menu if: proc{ current_admin_user.is_superadmin? }
+  menu if: proc{ current_admin_user.is_superadmin? || current_admin_user.is_admin? }
   before_action :authenticate
   #
   # or
@@ -19,7 +19,7 @@ ActiveAdmin.register Client do
   # end
   controller do
     def authenticate
-      if !current_admin_user.is_superadmin?
+      if !(current_admin_user.is_superadmin? || current_admin_user.is_superadmin? )
         render :file => "public/401.html", :status => :unauthorized
       end
     end
