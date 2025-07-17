@@ -45,9 +45,12 @@ ActiveAdmin.register Answer do
   end
 
   form do |f|
-    if @task.present?
+    if params[:task] || resource.task_id
+        task_id = resource.task_id ? resource.task_id : params[:task]
+        resource.task_id = task_id
+        task = Task.find(task_id)
       div class: 'new-answer-header' do
-        span "Respuesta para la tarea #{@task.title} en #{@task.website.title}"
+        h2 "Respuesta para la tarea #{task.title} en #{task.website.title}"
       end
     end
     f.inputs do
@@ -56,8 +59,7 @@ ActiveAdmin.register Answer do
       f.input :worked_time, value: "%H:%M", label: "Horas/Minutos trabajados"
       f.input :visible
       f.input :send_email
-      if params[:task] || resource.task_id
-        resource.task_id = resource.task_id ? resource.task_id : params[:task]
+      if task_id.present?
         f.has_many :task, new_record: false do |t|
         #@task, :url => '#' do |t|
           #f.has_many :class_tasks, heading: false, allow_destroy: false do |t|

@@ -11,8 +11,8 @@ default: &default
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: 5
   database: fuvals
-  username: backo
-  password: test4321
+  username: fuvals
+  password: test_4321
   host:     localhost
 
   timeout: 5000

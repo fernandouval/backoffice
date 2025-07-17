@@ -19,7 +19,7 @@ ActiveAdmin.register Client do
   # end
   controller do
     def authenticate
-      if !(current_admin_user.is_superadmin? || current_admin_user.is_superadmin? )
+      if !(current_admin_user.is_superadmin? || current_admin_user.is_admin? )
         render :file => "public/401.html", :status => :unauthorized
       end
     end

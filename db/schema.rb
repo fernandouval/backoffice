@@ -52,7 +52,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_06_205122) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "admin_user_id", null: false
-    t.text "body"
     t.string "title"
     t.time "worked_time"
     t.index ["admin_user_id"], name: "index_answers_on_admin_user_id"
